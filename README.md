@@ -1,6 +1,6 @@
-# 🌐 Codex Umbrae // VHS-SYS Terminal Rpg
+# 📼 C.O.D.E.X. Umbrae // VHS-SYS Terminal Rpg
 
-O **Codex Umbrae** é uma plataforma integrada de mesa virtual (VTT) e sistema de inteligência para campanhas de RPG de mesa, projetada com uma estética retro-futurista de terminal CRT/VHS (fósforo verde, distorções analógicas, glitch e scanlines). 
+O **Codex Umbrae** é uma plataforma integrada de mesa virtual (VTT) e sistema de inteligência para campanhas de RPG de mesa, projetada com uma estética retro-futurista de terminal CRT/VHS. 
 
 A plataforma divide-se em ferramentas avançadas para o **Mestre (GM)** gerenciar todos os aspectos narrativos, mecânicos e táticos da campanha, e um **Painel de Operador dedicado para os Jogadores** conectados via código de mesa, oferecendo fichas integradas e grid de batalha com sincronização de posicionamento em tempo real.
 
@@ -101,7 +101,7 @@ A plataforma é construída sobre a **T3 Stack**, garantindo Typesafety de ponta
 ### Instalação
 1. Clone o repositório no seu diretório de trabalho:
    ```bash
-   git clone <URL_DO_REPOSITORIO> codex-umbrae
+   git clone https://github.com/SenhorArroz/sitema-gestao-rpg-de-mesa.git codex-umbrae
    ```
 
 2. Instale as dependências do projeto:
@@ -118,9 +118,9 @@ A plataforma é construída sobre a **T3 Stack**, garantindo Typesafety de ponta
    NEXTAUTH_SECRET="sua_chave_secreta_aqui"
    NEXTAUTH_URL="http://localhost:3000"
 
-   # Credenciais opcionais de OAuth (GitHub/Discord/Google) para o NextAuth
-   DISCORD_CLIENT_ID=""
-   DISCORD_CLIENT_SECRET=""
+   # Credenciais opcionais de OAuth (Google) para o NextAuth
+   GOOGLE_CLIENT_ID=""
+   GOOGLE_CLIENT_SECRET=""
    ```
 
 4. Empurre o esquema do banco de dados Prisma e gere o client local:
