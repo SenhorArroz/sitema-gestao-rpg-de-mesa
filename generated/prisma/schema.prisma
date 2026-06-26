@@ -1,0 +1,423 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/**
+ * ==========================================================
+ * NEXT-AUTH: AUTENTICAÇÃO E SESSÕES
+ * ==========================================================
+ */
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user                     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refresh_token_expires_in Int?
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  // RELAÇÃO: Um usuário pode ser dono (mestre) de várias mesas
+  mesas Mesa[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+/**
+ * ==========================================================
+ * SISTEMA 00: CORE DE CAMPANHA (MESAS)
+ * ==========================================================
+ */
+
+model Mesa {
+  id        String  @id @default(cuid())
+  nome      String // Ex: "Campanha de Murn"
+  descricao String? @db.Text
+  codigo    String  @unique @default("000000")
+
+  // O dono da Mesa (Mestre) ligado ao NextAuth
+  mestreId String
+  mestre   User   @relation(fields: [mestreId], references: [id], onDelete: Cascade)
+
+  // RELAÇÕES: Tudo o que pertence exclusivamente a esta mesa
+  itens           Item[]
+  modelosFicha    ModeloFicha[]
+  personagens     Personagem[]
+  dossies         Dossie[]
+  postIts         PostIt[]
+  conspiracaoNos  ConspiracaoNo[]
+  timelineEventos TimelineEvento[]
+  logsRolagem     LogRolagem[]
+  fitasPreset     FitaPreset[]
+  modificadores   ModificadorGlobal[]
+  npcs            NPC[]
+  quests          Quest[]
+  monstros        Monstro[]
+  batalhaMapas    BatalhaMapa[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/**
+ * ==========================================================
+ * SISTEMA 01: ARSENAL E INVENTÁRIO GLOBAL DA MESA
+ * ==========================================================
+ */
+
+enum ItemTipo {
+  ARMA
+  ARMADURA
+  CONSUMIVEL
+  QUEST
+  MISC
+}
+
+enum ItemRaridade {
+  COMUM
+  INCOMUM
+  RARO
+  EPICO
+  LENDARIO
+}
+
+model Item {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  nome      String
+  tipo      ItemTipo
+  raridade  ItemRaridade
+  valor     String
+  peso      String
+  efeito    String
+  descricao String       @db.Text
+
+  personagens InventarioPersonagem[]
+  createdAt   DateTime               @default(now())
+}
+
+/**
+ * ==========================================================
+ * SISTEMA 02: FORJA DE REGRAS E PERSONAGENS
+ * ==========================================================
+ */
+
+model ModeloFicha {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  nome    String
+  sistema String
+  blocos  Json
+
+  personagens Personagem[]
+  createdAt   DateTime     @default(now())
+}
+
+model Personagem {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  nome     String
+  conceito String
+
+  hpAtual  Int
+  hpMax    Int
+  recLabel String
+  recAtual Int
+  recMax   Int
+
+  atributos       Json
+  pericias        Json
+  anotacoesMestre String? @db.Text
+
+  modeloId String
+  modelo   ModeloFicha @relation(fields: [modeloId], references: [id], onDelete: Restrict)
+
+  inventario InventarioPersonagem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InventarioPersonagem {
+  id           String @id @default(cuid())
+  personagemId String
+  itemId       String
+  quantidade   Int    @default(1)
+
+  personagem Personagem @relation(fields: [personagemId], references: [id], onDelete: Cascade)
+  item       Item       @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([personagemId, itemId])
+}
+
+/**
+ * ==========================================================
+ * SISTEMA 03: DOSSIÊS E INTELIGÊNCIA (NOTAS)
+ * ==========================================================
+ */
+
+enum NotaCategoria {
+  NPC
+  LOCAL
+  PISTA
+  EVENTO
+  MISSAO
+  FACCAO
+  ITEM
+  LIVRE
+}
+
+enum NivelAmeaca {
+  CRITICO
+  ELEVADO
+  INFORMATIVO
+}
+
+enum StatusPista {
+  CATALOGADA
+  PENDENTE
+  DESCONHECIDA
+}
+
+model Dossie {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  refCode      String
+  titulo       String
+  categoria    NotaCategoria
+  ameaca       NivelAmeaca
+  statusPista  StatusPista?
+  conteudo     String        @db.Text
+  dataRegistro String
+
+  createdAt DateTime @default(now())
+
+  // Garante que o refCode seja único APENAS dentro da mesa específica
+  @@unique([refCode, mesaId])
+}
+
+model PostIt {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  texto     String  @db.Text
+  cor       String
+  degradado Boolean @default(false)
+}
+
+/**
+ * ─── MATRIZ DE CONSPIRAÇÃO ───
+ */
+
+model ConspiracaoNo {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  lbl  String
+  tipo String
+  cor  String
+  x    String
+  y    String
+
+  fiosSaida   ConspiracaoFio[] @relation("FioOrigem")
+  fiosEntrada ConspiracaoFio[] @relation("FioDestino")
+}
+
+model ConspiracaoFio {
+  id   String @id @default(cuid())
+  nota String
+
+  origemId  String
+  destinoId String
+
+  origem  ConspiracaoNo @relation("FioOrigem", fields: [origemId], references: [id], onDelete: Cascade)
+  destino ConspiracaoNo @relation("FioDestino", fields: [destinoId], references: [id], onDelete: Cascade)
+}
+
+/**
+ * ─── CRONOGRAMA DE INCIDENTES ───
+ */
+
+enum TimelineTipo {
+  SESSAO
+  LORE_PASSADO
+  INCIDENTE
+}
+
+model TimelineEvento {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  timestamp String
+  titulo    String
+  relato    String       @db.Text
+  tipo      TimelineTipo
+  ordenacao Int          @default(autoincrement())
+}
+
+/**
+ * ==========================================================
+ * SISTEMA 04: COMPUTADOR BALÍSTICO (DADOS)
+ * ==========================================================
+ */
+
+enum StatusRolagem {
+  SUCESSO_CRITICO
+  SUCESSO_PARCIAL
+  FALHA
+  FALHA_CRITICA
+  VALOR_EXTREMO
+  NORMAL
+}
+
+model LogRolagem {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  timestamp       String
+  operador        String
+  formula         String
+  modAplicado     Int
+  resultadosIndiv Json
+  total           Int
+  classificacao   StatusRolagem
+  narrativa       String        @db.Text
+  isSecreta       Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+}
+
+model FitaPreset {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  codigoFita       String
+  titulo           String
+  tipo             String
+  deck             Json
+  bonusFix         Int
+  descricaoGatilho String
+
+  @@unique([codigoFita, mesaId])
+}
+
+model ModificadorGlobal {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  lbl String
+  val Int
+  cor String
+}
+
+/**
+ * ==========================================================
+ * SISTEMA 05: EXPANSÃO (BESTIÁRIO, NPCS, QUESTS)
+ * ==========================================================
+ */
+
+model NPC {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  nome        String
+  papel       String
+  localizacao String
+  status      String
+  notas       String @db.Text
+}
+
+model Quest {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  titulo      String
+  status      String
+  descricao   String @db.Text
+  objetivo    String @db.Text
+  recompensas String @db.Text
+}
+
+model Monstro {
+  id     String @id @default(cuid())
+  mesaId String
+  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+
+  nome        String
+  tipo        String
+  ameaca      String
+  hp          Int
+  atributos   Json
+  habilidades Json
+  descricao   String @db.Text
+}
+
+model BatalhaMapa {
+  id        String   @id @default(cuid())
+  mesaId    String
+  mesa      Mesa     @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+  nome      String
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([mesaId, nome])
+}
