@@ -237,7 +237,7 @@ export default function QuestsPage() {
 
   // Auto-selecionar o primeiro ao carregar
   useEffect(() => {
-    if (quests.length > 0 && !selectedId && !isLoading) {
+    if (typeof window !== "undefined" && window.innerWidth >= 768 && quests.length > 0 && !selectedId && !isLoading) {
       const firstQuest = quests[0];
       if (firstQuest) setSelectedId(firstQuest.id);
     }
@@ -350,18 +350,18 @@ export default function QuestsPage() {
               <div className={`${mono.className} text-sm tracking-wider`} style={{ color: "#2a2a4a" }}>REGISTROS: {String(quests.length).padStart(2, '0')}</div>
             </header>
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden">
               <Sidebar mono={mono.className} active={activeNav} setActive={setActiveNav} />
               
-              <main className="flex-1 overflow-y-auto p-4 flex gap-4" style={{ scrollbarColor: "#2a2a3a #0a0a0e" }}>
+              <main className="flex-1 overflow-hidden p-2 md:p-4 flex flex-col md:flex-row gap-2 md:gap-4" style={{ scrollbarColor: "#2a2a3a #0a0a0e" }}>
                 
                 {/* COLUNA ESQUERDA: Lista de Missões */}
-                <div className="w-1/3 min-w-[280px] flex flex-col border" style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
-                  <div className="flex items-center justify-between px-4 py-2 border-b" style={{ background: "#080810", borderColor: "#1a1a28" }}>
+                <div className={`w-full md:w-1/3 md:min-w-[280px] flex flex-col border min-h-0 overflow-hidden ${selectedId ? "hidden md:flex" : "flex"}`} style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
+                  <div className="flex items-center justify-between px-4 py-2 border-b flex-shrink-0" style={{ background: "#080810", borderColor: "#1a1a28" }}>
                     <span className={`${vt323.className} text-xl uppercase`} style={{ color: "#a0a0e0" }}>&gt; Log de Missões</span>
                     {isMestre && <SmBtn mono={mono.className} color="#e8d080" onClick={handleCreateNew}>+ Nova Missão</SmBtn>}
                   </div>
-                  <div className="flex-1 overflow-y-auto p-4 flex flex-col">
+                  <div className="flex-1 overflow-y-auto p-4 flex flex-col min-h-0">
                     {isLoading ? (
                       <span className="text-[#40c060] text-xs animate-pulse tracking-widest">// AQUISITANDO DADOS...</span>
                     ) : quests.length === 0 ? (
@@ -375,7 +375,7 @@ export default function QuestsPage() {
                             className="flex items-start gap-3 py-3 text-left border-b last:border-0 cursor-pointer transition-colors hover:bg-[#111116]"
                             style={{ borderColor: "#161620", background: q.id === selectedId ? "#11111a" : "transparent" }}
                           >
-                            <div className="w-[6px] h-[20px] mt-1" style={{ background: q.id === selectedId ? sColor : "transparent" }} />
+                            <div className="w-[6px] h-[20px] mt-1 flex-shrink-0" style={{ background: q.id === selectedId ? sColor : "transparent" }} />
                             <div className="flex-1 min-w-0">
                               <div className={`${mono.className} text-sm truncate mb-1`} style={{ color: q.id === selectedId ? "#e8e0d0" : "#c0c0d8" }}>
                                 {q.titulo}
@@ -396,9 +396,14 @@ export default function QuestsPage() {
                 </div>
 
                 {/* COLUNA DIREITA: Relatório da Missão */}
-                <div className="flex-1 flex flex-col border" style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
-                  <div className="flex items-center justify-between px-4 py-2 border-b" style={{ background: "#080810", borderColor: "#1a1a28" }}>
-                    <span className={`${vt323.className} text-xl uppercase`} style={{ color: "#a0a0e0" }}>&gt; Datafile // {selectedQuest?.id.slice(-6).toUpperCase() || "NULL"}</span>
+                <div className={`flex-1 flex-col border w-full min-h-0 overflow-hidden ${selectedId ? "flex" : "hidden md:flex"}`} style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
+                  <div className="flex items-center justify-between px-4 py-2 border-b flex-shrink-0" style={{ background: "#080810", borderColor: "#1a1a28" }}>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => setSelectedId("")} className="md:hidden text-xs tracking-widest uppercase px-2 py-0.5 border border-[#2a2a3a] text-[#a0a0e0] bg-[#0d0d14] mr-1 active:scale-95">
+                        ◀ Voltar
+                      </button>
+                      <span className={`${vt323.className} text-xl uppercase`} style={{ color: "#a0a0e0" }}>&gt; Datafile // {selectedQuest?.id.slice(-6).toUpperCase() || "NULL"}</span>
+                    </div>
                     {isMestre && (
                       <div className="flex gap-2">
                         {selectedQuest && (
@@ -417,11 +422,11 @@ export default function QuestsPage() {
                     )}
                   </div>
                   
-                  <div className="p-5 flex-1 overflow-y-auto">
+                  <div className="p-5 flex-1 overflow-y-auto min-h-0" style={{ scrollbarColor: "#2a2a3a transparent" }}>
                     {!selectedQuest ? (
                       <div className="text-[#606080] text-center mt-10 text-sm tracking-widest">// SELECIONE UMA MISSÃO NO INDEX PARA EXIBIR DADOS</div>
                     ) : (
-                      <div className="border flex flex-col h-full animate-in fade-in" style={{ borderColor: "#2a2a3a", background: "#0a0a0e" }}>
+                      <div className="border flex flex-col animate-in fade-in" style={{ borderColor: "#2a2a3a", background: "#0a0a0e" }}>
                         
                         {/* Cabeçalho */}
                         <div className="p-5 border-b" style={{ borderColor: "#2a2a3a", background: "#111116" }}>

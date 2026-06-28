@@ -387,7 +387,7 @@ export default function ItensPage() {
   const selectedItem = itens.find((i) => i.id === selectedId);
 
   useEffect(() => {
-    if (itens.length > 0 && !selectedId && !isLoading) {
+    if (typeof window !== "undefined" && window.innerWidth >= 768 && itens.length > 0 && !selectedId && !isLoading) {
       const first = itens[0];
       if (first) {
         setSelectedId(first.id);
@@ -509,13 +509,13 @@ export default function ItensPage() {
               </div>
             </header>
 
-            <div className="flex flex-1 overflow-hidden relative z-10">
+            <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden relative z-10">
               <Sidebar mono={mono.className} active={activeNav} setActive={setActiveNav} />
 
-              <main className="flex-1 overflow-hidden flex gap-4 p-4 bg-[#060a08]">
+              <main className="flex-1 overflow-y-auto md:overflow-hidden flex flex-col md:flex-row gap-2 md:gap-4 p-2 md:p-4 bg-[#060a08]">
                 
                 {/* COLUNA ESQUERDA: GRADE DE MINI-CARTAS */}
-                <div className="w-[45%] max-w-[500px] flex flex-col border border-[#2a2a3a] bg-[#0d0d14] relative z-10 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                <div className={`w-full md:w-[45%] md:max-w-[500px] flex flex-col border border-[#2a2a3a] bg-[#0d0d14] relative z-10 shadow-[0_0_30px_rgba(0,0,0,0.5)] ${selectedId ? "hidden md:flex" : "flex"}`}>
                   <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a1a28] flex-shrink-0 bg-[#080810]">
                     <span className={`${vt323.className} text-xl uppercase tracking-widest text-[#30a0e0]`}>&gt; Inventário Global</span>
                     <SmBtn mono={mono.className} color="#30a0e0" onClick={handleCreateNew}>+ Novo Item</SmBtn>
@@ -558,12 +558,17 @@ export default function ItensPage() {
                 </div>
 
                 {/* COLUNA DIREITA: CARTA DETALHADA FLUTUANTE */}
-                <div className="flex-1 flex flex-col items-center justify-start overflow-y-auto pt-6 pb-20 relative" style={{ background: "repeating-linear-gradient(45deg, #08080c 0px, #08080c 2px, transparent 2px, transparent 8px)" }}>
+                <div className={`flex-1 flex-col items-center justify-start overflow-y-auto pt-6 pb-20 relative w-full ${selectedId ? "flex" : "hidden md:flex"}`} style={{ background: "repeating-linear-gradient(45deg, #08080c 0px, #08080c 2px, transparent 2px, transparent 8px)" }}>
                   
                   {selectedItem && (
-                    <div className="flex gap-4 mb-4 z-20">
-                      <SmBtn mono={mono.className} color="#e03030" disabled={deleteMutation.isPending} onClick={handleDelete}>[X] Purgar Registro</SmBtn>
-                      <SmBtn mono={mono.className} color="#e8d080" onClick={handleEdit}>[*] Editar Metadados</SmBtn>
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4 z-20 items-center">
+                      <button onClick={() => setSelectedId("")} className="md:hidden text-xs tracking-widest uppercase px-3 py-1 border border-[#2a2a3a] text-[#a0a0e0] bg-[#0d0d14] active:scale-95">
+                        ◀ Voltar
+                      </button>
+                      <div className="flex gap-2">
+                        <SmBtn mono={mono.className} color="#e03030" disabled={deleteMutation.isPending} onClick={handleDelete}>[X] Purgar Registro</SmBtn>
+                        <SmBtn mono={mono.className} color="#e8d080" onClick={handleEdit}>[*] Editar Metadados</SmBtn>
+                      </div>
                     </div>
                   )}
 

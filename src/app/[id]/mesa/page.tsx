@@ -601,7 +601,7 @@ function GmDashboard({ mesaData }: { mesaData: any }) {
             </div>
           </header>
 
-          <div className="flex flex-1 overflow-hidden">
+          <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden">
             <Sidebar active={activeNav} setActive={setActiveNav} mono={mono.className} />
 
             <main className="flex-1 overflow-y-auto p-3 grid grid-cols-1 lg:grid-cols-12 gap-3" style={{ scrollbarColor: "#2a2a3a #0a0a0e" }}>
@@ -1160,7 +1160,7 @@ function PlayerDashboard({
           </div>
         </header>
 
-        <div className="flex flex-1 min-h-0 overflow-hidden relative">
+        <div className="flex flex-col-reverse md:flex-row flex-1 min-h-0 overflow-hidden relative">
           <Sidebar mono={m} active={activeNav} setActive={setActiveNav} />
 
           {isLoadingChars ? (

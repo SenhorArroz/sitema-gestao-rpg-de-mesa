@@ -206,7 +206,7 @@ export default function PersonagensPage() {
         };
       });
       setLocalChars(parsed);
-      if (!selectedId && parsed.length > 0) {
+      if (typeof window !== "undefined" && window.innerWidth >= 768 && !selectedId && parsed.length > 0) {
         const firstChar = parsed[0];
         if (firstChar) setSelectedId(firstChar.id);
       }
@@ -372,11 +372,11 @@ export default function PersonagensPage() {
               )}
             </header>
 
-            <div className="flex flex-1 min-h-0 overflow-hidden relative">
+            <div className="flex flex-col-reverse md:flex-row flex-1 min-h-0 overflow-hidden relative">
               <Sidebar mono={mono.className} active={activeNav} setActive={setActiveNav} />
 
               {/* LISTA DE PERSONAGENS */}
-              <div className="w-[300px] flex flex-col border-r border-[#2a2a3a] bg-[#0d0d14] relative z-10 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+              <div className={`w-full md:w-[300px] flex flex-col border-r border-[#2a2a3a] bg-[#0d0d14] relative z-10 shadow-[0_0_30px_rgba(0,0,0,0.5)] ${selectedId ? "hidden md:flex" : "flex"}`}>
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a1a28] bg-[#080810]">
                   <span className={`${vt323.className} text-xl uppercase tracking-widest text-[#40c060]`}>&gt; Baralho</span>
                   <SmBtn mono={m} color="#40c060" onClick={() => setIsCreating(true)}>+ Instanciar</SmBtn>
@@ -397,13 +397,19 @@ export default function PersonagensPage() {
               </div>
 
               {/* FICHA TÁTICA */}
-              <main className="flex-1 overflow-y-auto p-6 bg-[#060a08]" style={{ backgroundImage: "repeating-linear-gradient(45deg, #08080c 0px, #08080c 2px, transparent 2px, transparent 8px)", scrollbarColor: "#2a2a3a transparent" }}>
+              <main className={`flex-1 overflow-y-auto p-4 md:p-6 bg-[#060a08] ${selectedId ? "flex" : "hidden md:flex"}`} style={{ backgroundImage: "repeating-linear-gradient(45deg, #08080c 0px, #08080c 2px, transparent 2px, transparent 8px)", scrollbarColor: "#2a2a3a transparent" }}>
                 {!activeChar ? (
                    <div className="mt-40 border border-dashed border-[#2a2a3a] p-8 text-center text-[#606080] text-xs tracking-widest uppercase bg-[#0d0d14] max-w-2xl mx-auto shadow-[0_0_24px_rgba(0,0,0,0.38)]">
                      <GlitchText text="// SELECIONE UM SUJEITO PARA VISUALIZAR O FEED NEURAL" />
                    </div>
                 ) : (
                   <div className="max-w-4xl mx-auto flex flex-col gap-6 animate-in slide-in-from-bottom-4">
+                    {/* Botão Voltar para Celular */}
+                    <div className="md:hidden flex-shrink-0">
+                      <button onClick={() => setSelectedId("")} className={`${m} text-xs tracking-widest uppercase px-3 py-1.5 border border-[#2a2a3a] text-[#a0a0e0] bg-[#0d0d14] active:scale-95`}>
+                        ◀ Voltar para o Baralho
+                      </button>
+                    </div>
                     
                     {/* Renderização Dinâmica baseada nos Blocos do Template */}
                     {(activeChar.templateBlocks ?? []).length > 0 ? (

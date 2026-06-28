@@ -287,7 +287,7 @@ export default function NotasPage() {
       const parsed = rawDossies.map(d => ({ ...d, ameaca: d.ameaca as NivelAmeaca, categoria: d.categoria as CategoriaNota, statusPista: d.statusPista as StatusPista }));
       setDossies(parsed);
       setDossierSelecionadoId(prev => {
-        if (!prev && parsed.length > 0) {
+        if (typeof window !== "undefined" && window.innerWidth >= 768 && !prev && parsed.length > 0) {
           const firstDossie = parsed[0];
           if (firstDossie) return firstDossie.id;
         }
@@ -410,7 +410,7 @@ export default function NotasPage() {
               <div className="flex items-center gap-2"><span className={`${m} text-xs tracking-widest bg-[#1b3b2b] text-[#40c060] px-2 py-1 border border-[#40c060]`}>ACESSO: GM_MASTER // CONFIDENCIAL</span></div>
             </header>
 
-            <div className="flex flex-1 overflow-hidden relative z-10">
+            <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden relative z-10">
               <Sidebar active={activeNav} setActive={setActiveNav} mono={m} />
 
               <div className="flex-1 flex flex-col bg-[#0a0a0e] overflow-hidden">
@@ -423,8 +423,8 @@ export default function NotasPage() {
 
                 {/* DOSSIÊS */}
                 {subSistema === "DOSSIES" && (
-                  <div className="flex-1 flex overflow-hidden animate-in fade-in">
-                    <div className="w-[300px] border-r border-[#1b3b2b] bg-[#060a08]/80 flex flex-col flex-shrink-0 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                  <div className="flex-1 flex flex-col md:flex-row overflow-hidden animate-in fade-in">
+                    <div className={`w-full md:w-[300px] border-r border-[#1b3b2b] bg-[#060a08]/80 flex flex-col flex-shrink-0 shadow-[0_0_30px_rgba(0,0,0,0.5)] ${dossierSelecionadoId ? "hidden md:flex" : "flex"}`}>
                       <div className="p-3 border-b border-[#1b3b2b] bg-[#060a08]">
                         <span className="text-[10px] text-[#608070] tracking-widest block uppercase mb-2">// DIRETÓRIOS DE INDEXAÇÃO</span>
                         <select value={filtroCat} onChange={e => setFiltroCat(e.target.value)} className={`${m} w-full bg-[#0a0a0e] text-[#40c060] border border-[#1b3b2b] p-2 text-xs outline-none focus:border-[#40c060]`}>
@@ -448,10 +448,13 @@ export default function NotasPage() {
                       </div>
                       <div className="p-3 bg-[#060a08] border-t border-[#1b3b2b]"><SmBtn mono={m} color="#40c060" onClick={() => setModalDossie({ isOpen: true, data: { id: `NEW-${Date.now()}`, refCode: "DOC.000", titulo: "", categoria: "LIVRE", ameaca: "INFORMATIVO", conteudo: "", dataRegistro: new Date().toLocaleDateString('pt-BR') } })}>+ Novo Arquivo</SmBtn></div>
                     </div>
-                    <div className="flex-1 flex flex-col p-6 overflow-y-auto" style={{ backgroundImage: "repeating-linear-gradient(45deg, #08080c 0px, #08080c 2px, transparent 2px, transparent 8px)" }}>
+                    <div className={`flex-1 flex flex-col p-4 md:p-6 overflow-y-auto w-full ${dossierSelecionadoId ? "flex" : "hidden md:flex"}`} style={{ backgroundImage: "repeating-linear-gradient(45deg, #08080c 0px, #08080c 2px, transparent 2px, transparent 8px)" }}>
                       {docAtivo && (
                         <div className="max-w-3xl mx-auto w-full flex flex-col gap-6 animate-in slide-in-from-bottom-4">
-                          <div className="flex gap-3 justify-end">
+                          <div className="flex gap-3 justify-end items-center">
+                            <button onClick={() => setDossierSelecionadoId("")} className="md:hidden text-xs tracking-widest uppercase px-3 py-1 border border-[#1b3b2b] text-[#40c060] bg-[#060a08] mr-auto active:scale-95">
+                              ◀ Voltar
+                            </button>
                             <SmBtn mono={m} color="#e03030" disabled={delDossie.isPending} onClick={handleDeleteDossie}>Expurgar Arquivo</SmBtn>
                             <SmBtn mono={m} color="#40c060" onClick={() => setModalDossie({ isOpen: true, data: docAtivo })}>Editar Arquivo</SmBtn>
                           </div>
@@ -468,8 +471,8 @@ export default function NotasPage() {
 
                 {/* MATRIZ DE CONSPIRAÇÃO */}
                 {subSistema === "CONSPIRACAO" && (
-                  <div className="flex-1 flex overflow-hidden animate-in fade-in bg-[#060a08] p-6 select-none gap-4">
-                    <div className="w-[280px] border border-[#1b3b2b] bg-[#0a0a0e] p-4 flex flex-col justify-between flex-shrink-0 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
+                  <div className="flex-1 flex flex-col md:flex-row overflow-hidden animate-in fade-in bg-[#060a08] p-2 md:p-6 select-none gap-2 md:gap-4">
+                    <div className="w-full md:w-[280px] border border-[#1b3b2b] bg-[#0a0a0e] p-4 flex flex-col justify-between flex-shrink-0 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                       <div>
                         <span className={`${vt} text-xl text-[#e03030] block mb-3`}>// PAINEL OPERACIONAL</span>
                         <div className="flex flex-col gap-2 mb-4">
@@ -490,7 +493,7 @@ export default function NotasPage() {
                     </div>
 
                     <div ref={quadroRef} onDragOver={e=>e.preventDefault()} onDrop={handleDropQuadro}
-                         className="flex-1 border border-[#1b3b2b] bg-[#0a0a0e] relative shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]"
+                         className="flex-1 min-h-[400px] border border-[#1b3b2b] bg-[#0a0a0e] relative shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]"
                          style={{ backgroundImage: "repeating-linear-gradient(#102018 1px,transparent 1px),repeating-linear-gradient(90deg,#102018 1px,transparent 1px)", backgroundSize: "40px 40px" }}>
                       
                       <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
@@ -562,7 +565,7 @@ export default function NotasPage() {
                         <span className={`${vt} text-3xl text-[#30a0e0] vhs-chroma`}>// MURAL DE FRAGMENTOS</span>
                         <SmBtn mono={m} color="#30a0e0" onClick={() => setModalPostIt({ isOpen: true, data: { id: `NEW-${Date.now()}`, texto: "", cor: "#e8d080", degradado: false } })}>+ Afixar Lembrete</SmBtn>
                       </div>
-                      <div className="grid grid-cols-3 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
                         {mural.map(p => {
                           const bgCor = p.cor === "#e8d080" ? "#2a2510" : p.cor === "#40c060" ? "#102518" : "#201025";
                           return (

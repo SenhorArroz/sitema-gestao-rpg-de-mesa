@@ -197,6 +197,7 @@ export default function SheetBuilderPage() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [selTpl, setSelTpl] = useState("");
   const [dragOver, setDragOver] = useState(false);
+  const [showLeftPanel, setShowLeftPanel] = useState(true);
 
   const [isBooting, setIsBooting] = useState(true);
   const [bootLines, setBootLines] = useState<string[]>([]);
@@ -281,6 +282,7 @@ export default function SheetBuilderPage() {
     setSheetName(tpl.nome.toUpperCase());
     setSystemName(tpl.sistema.toUpperCase());
     setBlocks(tpl.blocks.map((b) => ({ ...b, id: uid(), data: { ...b.data } })));
+    setShowLeftPanel(false);
   }
 
   function handleSaveModel() {
@@ -336,6 +338,12 @@ export default function SheetBuilderPage() {
               </div>
 
               <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowLeftPanel(!showLeftPanel)}
+                  className="md:hidden text-[10px] border border-[#2a2a3a] px-2 py-1 text-[#e8d080] bg-[#0a0a0e] active:scale-95"
+                >
+                  {showLeftPanel ? "VER CANVAS" : "VER LISTA"}
+                </button>
                 <div className="flex flex-col text-right mr-2">
                   <input
                     value={sheetName}
@@ -363,17 +371,25 @@ export default function SheetBuilderPage() {
               </div>
             </header>
 
-            <div className="flex flex-1 overflow-hidden relative z-10">
+            <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden relative z-10">
               <Sidebar active={activeNav} setActive={setActiveNav} mono={m} />
 
-              <div className="flex flex-col flex-shrink-0 border-r w-[240px] bg-[#0d0d14] border-[#1a1a28]">
+              <div className={`flex flex-col flex-shrink-0 border-r w-full md:w-[240px] bg-[#0d0d14] border-[#1a1a28] ${showLeftPanel ? "flex" : "hidden md:flex"}`}>
                 <PanelHead
                   vt={vt}
                   title="> Engines Salvas"
                   action={
-                    <SmBtn mono={m} color="#30a0e0" onClick={() => { setBlocks([]); setSheetName("NOVO SISTEMA"); setSystemName("SISTEMA CUSTOMIZADO"); setSelTpl(""); }}>
-                      + Novo
-                    </SmBtn>
+                    <div className="flex gap-1.5 items-center">
+                      <button
+                        onClick={() => setShowLeftPanel(false)}
+                        className="md:hidden text-[10px] border border-[#2a2a3a] px-2 py-1 text-[#e8d080] bg-[#0a0a0e] active:scale-95"
+                      >
+                        Canvas
+                      </button>
+                      <SmBtn mono={m} color="#30a0e0" onClick={() => { setBlocks([]); setSheetName("NOVO SISTEMA"); setSystemName("SISTEMA CUSTOMIZADO"); setSelTpl(""); setShowLeftPanel(false); }}>
+                        + Novo
+                      </SmBtn>
+                    </div>
                   }
                 />
 
@@ -417,7 +433,7 @@ export default function SheetBuilderPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col flex-1 overflow-hidden bg-[#0a0a0e]">
+              <div className={`flex flex-col flex-1 overflow-hidden bg-[#0a0a0e] ${showLeftPanel ? "hidden md:flex" : "flex"}`}>
                 <div className="flex items-center justify-between px-4 py-2 border-b flex-shrink-0 relative vhs-panel bg-[#080810] border-[#1a1a28]">
                   <span className={`${m} text-xs tracking-widest uppercase vhs-input text-[#e8d080]`}>// Compilador de Ficha // Sinal Estável</span>
                   <SmBtn mono={m} color="#e03030" onClick={() => { if (confirm("Deseja expurgar o canvas de estruturação atual?")) setBlocks([]); }}>

@@ -217,7 +217,7 @@ export default function NPCsPage() {
 
   // Auto-selecionar ao carregar
   useEffect(() => {
-    if (npcs.length > 0 && !selectedId && !isLoading) {
+    if (typeof window !== "undefined" && window.innerWidth >= 768 && npcs.length > 0 && !selectedId && !isLoading) {
       const firstNpc = npcs[0];
       if (firstNpc) setSelectedId(firstNpc.id);
     }
@@ -310,13 +310,13 @@ export default function NPCsPage() {
               <div className={`${mono.className} text-sm tracking-wider`} style={{ color: "#2a2a4a" }}>REGISTROS: {String(npcs.length).padStart(2, '0')}</div>
             </header>
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden">
               <Sidebar mono={mono.className} active={activeNav} setActive={setActiveNav} />
               
-              <main className="flex-1 overflow-y-auto p-4 flex gap-4" style={{ scrollbarColor: "#2a2a3a #0a0a0e" }}>
+              <main className="flex-1 overflow-y-auto md:overflow-hidden p-2 md:p-4 flex flex-col md:flex-row gap-2 md:gap-4" style={{ scrollbarColor: "#2a2a3a #0a0a0e" }}>
                 
                 {/* COLUNA ESQUERDA: Lista de NPCs */}
-                <div className="w-1/3 min-w-[280px] flex flex-col border" style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
+                <div className={`w-full md:w-1/3 md:min-w-[280px] flex flex-col border ${selectedId ? "hidden md:flex" : "flex"}`} style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
                   <div className="flex items-center justify-between px-4 py-2 border-b" style={{ background: "#080810", borderColor: "#1a1a28" }}>
                     <span className={`${vt323.className} text-xl uppercase`} style={{ color: "#a0a0e0" }}>&gt; Banco de Dados</span>
                     {isMestre && <SmBtn mono={mono.className} color="#a0a0e0" onClick={handleCreateNew}>+ Nova Entidade</SmBtn>}
@@ -355,9 +355,14 @@ export default function NPCsPage() {
                 </div>
 
                 {/* COLUNA DIREITA: Relatório do NPC */}
-                <div className="flex-1 flex flex-col border" style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
+                <div className={`flex-1 flex-col border w-full ${selectedId ? "flex" : "hidden md:flex"}`} style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
                   <div className="flex items-center justify-between px-4 py-2 border-b" style={{ background: "#080810", borderColor: "#1a1a28" }}>
-                    <span className={`${vt323.className} text-xl uppercase`} style={{ color: "#a0a0e0" }}>&gt; Datafile // {selectedNpc?.id.slice(-6).toUpperCase() || "NULL"}</span>
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => setSelectedId("")} className="md:hidden text-xs tracking-widest uppercase px-2 py-0.5 border border-[#2a2a3a] text-[#a0a0e0] bg-[#0d0d14] mr-1 active:scale-95">
+                        ◀ Voltar
+                      </button>
+                      <span className={`${vt323.className} text-xl uppercase`} style={{ color: "#a0a0e0" }}>&gt; Datafile // {selectedNpc?.id.slice(-6).toUpperCase() || "NULL"}</span>
+                    </div>
                     {isMestre && (
                       <div className="flex gap-2">
                         {selectedNpc && (

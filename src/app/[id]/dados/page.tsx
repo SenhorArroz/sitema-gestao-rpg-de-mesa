@@ -316,7 +316,7 @@ export default function ProcessadorDadosPage() {
           </div>
         </header>
 
-        <div className="flex flex-1 overflow-hidden relative z-10">
+        <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden relative z-10">
           <Sidebar active={activeNav} setActive={setActiveNav} mono={m} />
 
           {/* PAINEL CENTRAL OPERACIONAL */}
