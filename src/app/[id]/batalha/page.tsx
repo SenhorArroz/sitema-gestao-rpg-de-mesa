@@ -292,17 +292,7 @@ function MobileTabBar({
 /* ═══════════════════════════════════════════════════════
    COMPONENTE PRINCIPAL
 ══════════════════════════════════════════════════════════ */
-export default function BattleScreen({
-  combatants: externalCombatants,
-  turnIdx: externalTurnIdx,
-  onTurnNext,
-  onDamage,
-}: {
-  combatants?: Combatant[];
-  turnIdx?: number;
-  onTurnNext?: () => void;
-  onDamage?: (id: string, delta: number) => void;
-}) {
+export default function BattleScreen() {
   const { id: mesaId } = useParams() as { id: string };
   const { data: session } = useSession();
   const currentUserId = session?.user?.id;
@@ -405,7 +395,7 @@ export default function BattleScreen({
     }
   }, [dbMonstros, selectedMobId]);
 
-  const combatants = externalCombatants ?? (localCombatants.length > 0 ? localCombatants : MOCK_COMBATANTS);
+  const combatants = localCombatants.length > 0 ? localCombatants : MOCK_COMBATANTS;
   const vt = vt323.className;
   const m = mono.className;
 
@@ -438,24 +428,20 @@ export default function BattleScreen({
 
   /* ── Turno ── */
   const [localTurnIdx, setLocalTurnIdx] = useState(0);
-  const turnIdx = externalTurnIdx ?? localTurnIdx;
+  const turnIdx = localTurnIdx;
   const currentCombatant = combatants[turnIdx];
   const [round, setRound] = useState(1);
 
   function nextTurn() {
-    if (onTurnNext) {
-      onTurnNext();
-    } else {
-      const nextIdx = (localTurnIdx + 1) % combatants.length;
-      const nextRound = nextIdx === 0 ? round + 1 : round;
-      setLocalTurnIdx(nextIdx);
-      if (nextIdx === 0) setRound(nextRound);
-      if (isMestre && activeMap?.id) {
-        updateActiveMapDataMutation.mutate({
-          mesaId, mapId: activeMap.id,
-          data: { gridCols, gridRows, grid, tokens, localCombatants, localTurnIdx: nextIdx, round: nextRound }
-        });
-      }
+    const nextIdx = (localTurnIdx + 1) % combatants.length;
+    const nextRound = nextIdx === 0 ? round + 1 : round;
+    setLocalTurnIdx(nextIdx);
+    if (nextIdx === 0) setRound(nextRound);
+    if (isMestre && activeMap?.id) {
+      updateActiveMapDataMutation.mutate({
+        mesaId, mapId: activeMap.id,
+        data: { gridCols, gridRows, grid, tokens, localCombatants, localTurnIdx: nextIdx, round: nextRound }
+      });
     }
   }
 
@@ -518,22 +504,17 @@ export default function BattleScreen({
   function removeCombatant(id: string) {
     setLocalCombatants(prev => prev.filter(c => c.id !== id));
     if (turnIdx >= combatants.length - 1) {
-      if (onTurnNext) onTurnNext();
-      else setLocalTurnIdx(0);
+      setLocalTurnIdx(0);
     }
   }
 
   function handleDamage(id: string, delta: number) {
-    if (onDamage) {
-      onDamage(id, delta);
-    } else {
-      setLocalCombatants(prev => prev.map(c => {
-        if (c.id !== id) return c;
-        const newHp = Math.max(0, Math.min(c.hpMax, c.hpAtual + delta));
-        if (c.tipo === "PC") updateHpMutation.mutate({ id: c.id, hpAtual: newHp });
-        return { ...c, hpAtual: newHp };
-      }));
-    }
+    setLocalCombatants(prev => prev.map(c => {
+      if (c.id !== id) return c;
+      const newHp = Math.max(0, Math.min(c.hpMax, c.hpAtual + delta));
+      if (c.tipo === "PC") updateHpMutation.mutate({ id: c.id, hpAtual: newHp });
+      return { ...c, hpAtual: newHp };
+    }));
   }
 
   function handleUpdateInit(id: string, newInit: number) {
