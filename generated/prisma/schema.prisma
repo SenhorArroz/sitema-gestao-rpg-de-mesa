@@ -55,7 +55,8 @@ model User {
   sessions      Session[]
 
   // RELAÇÃO: Um usuário pode ser dono (mestre) de várias mesas
-  mesas Mesa[]
+  mesas       Mesa[]
+  personagens Personagem[] @relation("UserPersonagens")
 }
 
 model VerificationToken {
@@ -73,10 +74,11 @@ model VerificationToken {
  */
 
 model Mesa {
-  id        String  @id @default(cuid())
-  nome      String // Ex: "Campanha de Murn"
-  descricao String? @db.Text
-  codigo    String  @unique @default("000000")
+  id           String  @id @default(cuid())
+  nome         String // Ex: "Campanha de Murn"
+  descricao    String? @db.Text
+  codigo       String  @unique @default("000000")
+  activeMapaId String?
 
   // O dono da Mesa (Mestre) ligado ao NextAuth
   mestreId String
@@ -161,9 +163,11 @@ model ModeloFicha {
 }
 
 model Personagem {
-  id     String @id @default(cuid())
+  id     String  @id @default(cuid())
   mesaId String
-  mesa   Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+  mesa   Mesa    @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+  userId String?
+  user   User?   @relation("UserPersonagens", fields: [userId], references: [id], onDelete: SetNull)
 
   nome     String
   conceito String
@@ -381,7 +385,8 @@ model NPC {
   papel       String
   localizacao String
   status      String
-  notas       String @db.Text
+  notas       String  @db.Text
+  visivel     Boolean @default(false)
 }
 
 model Quest {
@@ -391,9 +396,10 @@ model Quest {
 
   titulo      String
   status      String
-  descricao   String @db.Text
-  objetivo    String @db.Text
-  recompensas String @db.Text
+  descricao   String  @db.Text
+  objetivo    String  @db.Text
+  recompensas String  @db.Text
+  visivel     Boolean @default(false)
 }
 
 model Monstro {
