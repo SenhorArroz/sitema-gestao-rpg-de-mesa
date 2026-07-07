@@ -66,26 +66,33 @@ export const questRouter = createTRPCRouter({
         throw new Error("Não autorizado");
       }
 
-      return await ctx.db.quest.upsert({
-        where: { id: input.id ?? "new" },
-        update: {
-          titulo: input.titulo,
-          status: input.status,
-          descricao: input.descricao,
-          recompensas: input.recompensas,
-          objetivo: input.objetivo,
-          visivel: input.visivel,
-        },
-        create: {
-          mesaId: input.mesaId,
-          titulo: input.titulo,
-          status: input.status,
-          descricao: input.descricao,
-          recompensas: input.recompensas,
-          objetivo: input.objetivo,
-          visivel: input.visivel ?? false,
-        },
-      });
+      if (input.id) {
+        // Edição: nunca toca no createdAt
+        return await ctx.db.quest.update({
+          where: { id: input.id },
+          data: {
+            titulo: input.titulo,
+            status: input.status,
+            descricao: input.descricao,
+            recompensas: input.recompensas,
+            objetivo: input.objetivo,
+            visivel: input.visivel,
+          },
+        });
+      } else {
+        // Criação: createdAt é definido automaticamente pelo @default(now())
+        return await ctx.db.quest.create({
+          data: {
+            mesaId: input.mesaId,
+            titulo: input.titulo,
+            status: input.status,
+            descricao: input.descricao,
+            recompensas: input.recompensas,
+            objetivo: input.objetivo,
+            visivel: input.visivel ?? false,
+          },
+        });
+      }
     }),
 
   // 3. Deletar Missão (restrito a mestre)
