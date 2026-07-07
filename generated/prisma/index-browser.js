@@ -318,7 +318,8 @@ exports.Prisma.QuestScalarFieldEnum = {
   descricao: 'descricao',
   objetivo: 'objetivo',
   recompensas: 'recompensas',
-  visivel: 'visivel'
+  visivel: 'visivel',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.MonstroScalarFieldEnum = {

@@ -18,6 +18,9 @@ export const questRouter = createTRPCRouter({
           mesaId: input.mesaId,
           ...(isMestre ? {} : { visivel: true }),
         },
+        orderBy: {
+          createdAt: 'asc', // Ou 'asc', dependendo da sua preferência
+        },
       });
 
       // Se for jogador, filtra subobjetivos invisíveis

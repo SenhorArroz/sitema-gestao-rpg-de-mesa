@@ -23639,6 +23639,7 @@ export namespace Prisma {
     objetivo: string | null
     recompensas: string | null
     visivel: boolean | null
+    createdAt: Date | null
   }
 
   export type QuestMaxAggregateOutputType = {
@@ -23650,6 +23651,7 @@ export namespace Prisma {
     objetivo: string | null
     recompensas: string | null
     visivel: boolean | null
+    createdAt: Date | null
   }
 
   export type QuestCountAggregateOutputType = {
@@ -23661,6 +23663,7 @@ export namespace Prisma {
     objetivo: number
     recompensas: number
     visivel: number
+    createdAt: number
     _all: number
   }
 
@@ -23674,6 +23677,7 @@ export namespace Prisma {
     objetivo?: true
     recompensas?: true
     visivel?: true
+    createdAt?: true
   }
 
   export type QuestMaxAggregateInputType = {
@@ -23685,6 +23689,7 @@ export namespace Prisma {
     objetivo?: true
     recompensas?: true
     visivel?: true
+    createdAt?: true
   }
 
   export type QuestCountAggregateInputType = {
@@ -23696,6 +23701,7 @@ export namespace Prisma {
     objetivo?: true
     recompensas?: true
     visivel?: true
+    createdAt?: true
     _all?: true
   }
 
@@ -23780,6 +23786,7 @@ export namespace Prisma {
     objetivo: string
     recompensas: string
     visivel: boolean
+    createdAt: Date
     _count: QuestCountAggregateOutputType | null
     _min: QuestMinAggregateOutputType | null
     _max: QuestMaxAggregateOutputType | null
@@ -23808,6 +23815,7 @@ export namespace Prisma {
     objetivo?: boolean
     recompensas?: boolean
     visivel?: boolean
+    createdAt?: boolean
     mesa?: boolean | MesaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["quest"]>
 
@@ -23820,6 +23828,7 @@ export namespace Prisma {
     objetivo?: boolean
     recompensas?: boolean
     visivel?: boolean
+    createdAt?: boolean
     mesa?: boolean | MesaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["quest"]>
 
@@ -23832,6 +23841,7 @@ export namespace Prisma {
     objetivo?: boolean
     recompensas?: boolean
     visivel?: boolean
+    createdAt?: boolean
     mesa?: boolean | MesaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["quest"]>
 
@@ -23844,9 +23854,10 @@ export namespace Prisma {
     objetivo?: boolean
     recompensas?: boolean
     visivel?: boolean
+    createdAt?: boolean
   }
 
-  export type QuestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mesaId" | "titulo" | "status" | "descricao" | "objetivo" | "recompensas" | "visivel", ExtArgs["result"]["quest"]>
+  export type QuestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mesaId" | "titulo" | "status" | "descricao" | "objetivo" | "recompensas" | "visivel" | "createdAt", ExtArgs["result"]["quest"]>
   export type QuestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mesa?: boolean | MesaDefaultArgs<ExtArgs>
   }
@@ -23871,6 +23882,7 @@ export namespace Prisma {
       objetivo: string
       recompensas: string
       visivel: boolean
+      createdAt: Date
     }, ExtArgs["result"]["quest"]>
     composites: {}
   }
@@ -24303,6 +24315,7 @@ export namespace Prisma {
     readonly objetivo: FieldRef<"Quest", 'String'>
     readonly recompensas: FieldRef<"Quest", 'String'>
     readonly visivel: FieldRef<"Quest", 'Boolean'>
+    readonly createdAt: FieldRef<"Quest", 'DateTime'>
   }
     
 
@@ -27185,7 +27198,8 @@ export namespace Prisma {
     descricao: 'descricao',
     objetivo: 'objetivo',
     recompensas: 'recompensas',
-    visivel: 'visivel'
+    visivel: 'visivel',
+    createdAt: 'createdAt'
   };
 
   export type QuestScalarFieldEnum = (typeof QuestScalarFieldEnum)[keyof typeof QuestScalarFieldEnum]
@@ -28762,6 +28776,7 @@ export namespace Prisma {
     objetivo?: StringFilter<"Quest"> | string
     recompensas?: StringFilter<"Quest"> | string
     visivel?: BoolFilter<"Quest"> | boolean
+    createdAt?: DateTimeFilter<"Quest"> | Date | string
     mesa?: XOR<MesaScalarRelationFilter, MesaWhereInput>
   }
 
@@ -28774,6 +28789,7 @@ export namespace Prisma {
     objetivo?: SortOrder
     recompensas?: SortOrder
     visivel?: SortOrder
+    createdAt?: SortOrder
     mesa?: MesaOrderByWithRelationInput
   }
 
@@ -28789,6 +28805,7 @@ export namespace Prisma {
     objetivo?: StringFilter<"Quest"> | string
     recompensas?: StringFilter<"Quest"> | string
     visivel?: BoolFilter<"Quest"> | boolean
+    createdAt?: DateTimeFilter<"Quest"> | Date | string
     mesa?: XOR<MesaScalarRelationFilter, MesaWhereInput>
   }, "id">
 
@@ -28801,6 +28818,7 @@ export namespace Prisma {
     objetivo?: SortOrder
     recompensas?: SortOrder
     visivel?: SortOrder
+    createdAt?: SortOrder
     _count?: QuestCountOrderByAggregateInput
     _max?: QuestMaxOrderByAggregateInput
     _min?: QuestMinOrderByAggregateInput
@@ -28818,6 +28836,7 @@ export namespace Prisma {
     objetivo?: StringWithAggregatesFilter<"Quest"> | string
     recompensas?: StringWithAggregatesFilter<"Quest"> | string
     visivel?: BoolWithAggregatesFilter<"Quest"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Quest"> | Date | string
   }
 
   export type MonstroWhereInput = {
@@ -30361,6 +30380,7 @@ export namespace Prisma {
     objetivo: string
     recompensas: string
     visivel?: boolean
+    createdAt?: Date | string
     mesa: MesaCreateNestedOneWithoutQuestsInput
   }
 
@@ -30373,6 +30393,7 @@ export namespace Prisma {
     objetivo: string
     recompensas: string
     visivel?: boolean
+    createdAt?: Date | string
   }
 
   export type QuestUpdateInput = {
@@ -30383,6 +30404,7 @@ export namespace Prisma {
     objetivo?: StringFieldUpdateOperationsInput | string
     recompensas?: StringFieldUpdateOperationsInput | string
     visivel?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mesa?: MesaUpdateOneRequiredWithoutQuestsNestedInput
   }
 
@@ -30395,6 +30417,7 @@ export namespace Prisma {
     objetivo?: StringFieldUpdateOperationsInput | string
     recompensas?: StringFieldUpdateOperationsInput | string
     visivel?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuestCreateManyInput = {
@@ -30406,6 +30429,7 @@ export namespace Prisma {
     objetivo: string
     recompensas: string
     visivel?: boolean
+    createdAt?: Date | string
   }
 
   export type QuestUpdateManyMutationInput = {
@@ -30416,6 +30440,7 @@ export namespace Prisma {
     objetivo?: StringFieldUpdateOperationsInput | string
     recompensas?: StringFieldUpdateOperationsInput | string
     visivel?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuestUncheckedUpdateManyInput = {
@@ -30427,6 +30452,7 @@ export namespace Prisma {
     objetivo?: StringFieldUpdateOperationsInput | string
     recompensas?: StringFieldUpdateOperationsInput | string
     visivel?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MonstroCreateInput = {
@@ -31812,6 +31838,7 @@ export namespace Prisma {
     objetivo?: SortOrder
     recompensas?: SortOrder
     visivel?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type QuestMaxOrderByAggregateInput = {
@@ -31823,6 +31850,7 @@ export namespace Prisma {
     objetivo?: SortOrder
     recompensas?: SortOrder
     visivel?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type QuestMinOrderByAggregateInput = {
@@ -31834,6 +31862,7 @@ export namespace Prisma {
     objetivo?: SortOrder
     recompensas?: SortOrder
     visivel?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type MonstroCountOrderByAggregateInput = {
@@ -34407,6 +34436,7 @@ export namespace Prisma {
     objetivo: string
     recompensas: string
     visivel?: boolean
+    createdAt?: Date | string
   }
 
   export type QuestUncheckedCreateWithoutMesaInput = {
@@ -34417,6 +34447,7 @@ export namespace Prisma {
     objetivo: string
     recompensas: string
     visivel?: boolean
+    createdAt?: Date | string
   }
 
   export type QuestCreateOrConnectWithoutMesaInput = {
@@ -34862,6 +34893,7 @@ export namespace Prisma {
     objetivo?: StringFilter<"Quest"> | string
     recompensas?: StringFilter<"Quest"> | string
     visivel?: BoolFilter<"Quest"> | boolean
+    createdAt?: DateTimeFilter<"Quest"> | Date | string
   }
 
   export type MonstroUpsertWithWhereUniqueWithoutMesaInput = {
@@ -37469,6 +37501,7 @@ export namespace Prisma {
     objetivo: string
     recompensas: string
     visivel?: boolean
+    createdAt?: Date | string
   }
 
   export type MonstroCreateManyMesaInput = {
@@ -37856,6 +37889,7 @@ export namespace Prisma {
     objetivo?: StringFieldUpdateOperationsInput | string
     recompensas?: StringFieldUpdateOperationsInput | string
     visivel?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuestUncheckedUpdateWithoutMesaInput = {
@@ -37866,6 +37900,7 @@ export namespace Prisma {
     objetivo?: StringFieldUpdateOperationsInput | string
     recompensas?: StringFieldUpdateOperationsInput | string
     visivel?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type QuestUncheckedUpdateManyWithoutMesaInput = {
@@ -37876,6 +37911,7 @@ export namespace Prisma {
     objetivo?: StringFieldUpdateOperationsInput | string
     recompensas?: StringFieldUpdateOperationsInput | string
     visivel?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MonstroUpdateWithoutMesaInput = {

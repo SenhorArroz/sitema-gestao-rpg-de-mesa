@@ -396,10 +396,11 @@ model Quest {
 
   titulo      String
   status      String
-  descricao   String  @db.Text
-  objetivo    String  @db.Text
-  recompensas String  @db.Text
-  visivel     Boolean @default(false)
+  descricao   String   @db.Text
+  objetivo    String   @db.Text
+  recompensas String   @db.Text
+  visivel     Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
 
 model Monstro {

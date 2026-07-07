@@ -382,6 +382,7 @@ model Quest {
   objetivo    String   @db.Text
   recompensas String   @db.Text
   visivel     Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
 
 model Monstro {
