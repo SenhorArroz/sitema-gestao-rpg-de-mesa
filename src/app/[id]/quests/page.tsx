@@ -347,7 +347,7 @@ export default function QuestsPage() {
 
   return (
     <AnalogGlitch>
-      <div className="flex flex-col overflow-hidden relative" style={{ height: "100dvh", background: "#0a0a0e", color: "#e8e0d0", fontFamily: mono.style.fontFamily }}>
+      <div className="flex flex-col overflow-auto relative" style={{ height: "100dvh", background: "#0a0a0e", color: "#e8e0d0", fontFamily: mono.style.fontFamily }}>
         <div className="pointer-events-none fixed inset-0 z-40" style={{ background: "repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.18) 2px,rgba(0,0,0,0.18) 4px)" }} />
         <NoiseStrip />
 
@@ -369,13 +369,13 @@ export default function QuestsPage() {
               <div className={`${mono.className} text-sm tracking-wider`} style={{ color: "#2a2a4a" }}>REGISTROS: {String(filteredQuests.length).padStart(2, '0')}/{String(quests.length).padStart(2, '0')}</div>
             </header>
 
-            <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden">
+            <div className="flex flex-col-reverse md:flex-row flex-1 overflow-auto">
               <Sidebar mono={mono.className} active={activeNav} setActive={setActiveNav} />
               
-              <main className="flex-1 overflow-hidden p-2 md:p-4 flex flex-col md:flex-row gap-2 md:gap-4" style={{ scrollbarColor: "#2a2a3a #0a0a0e" }}>
+              <main className="flex-1 overflow-auto p-2 md:p-4 flex flex-col md:flex-row gap-2 md:gap-4" style={{ scrollbarColor: "#2a2a3a #0a0a0e" }}>
                 
                 {/* COLUNA ESQUERDA: Lista de Missões */}
-                <div className={`w-full md:w-1/3 md:min-w-[280px] flex flex-col border min-h-0 overflow-hidden ${selectedId ? "hidden md:flex" : "flex"}`} style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
+                <div className={`w-full md:w-1/3 md:min-w-[280px] flex flex-col border min-h-0 overflow-auto ${selectedId ? "hidden md:flex" : "flex"}`} style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
                   <div className="flex items-center justify-between px-4 py-2 border-b flex-shrink-0" style={{ background: "#080810", borderColor: "#1a1a28" }}>
                     <span className={`${vt323.className} text-xl uppercase`} style={{ color: "#a0a0e0" }}>&gt; Log de Missões</span>
                     {isMestre && <SmBtn mono={mono.className} color="#e8d080" onClick={handleCreateNew}>+ Nova Missão</SmBtn>}
@@ -472,7 +472,7 @@ export default function QuestsPage() {
                 </div>
 
                 {/* COLUNA DIREITA: Relatório da Missão */}
-                <div className={`flex-1 flex-col border w-full min-h-0 overflow-hidden ${selectedId ? "flex" : "hidden md:flex"}`} style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
+                <div className={`flex-1 flex-col border w-full min-h-0 overflow-auto ${selectedId ? "flex" : "hidden md:flex"}`} style={{ background: "#0d0d14", borderColor: "#2a2a3a" }}>
                   <div className="flex items-center justify-between px-4 py-2 border-b flex-shrink-0" style={{ background: "#080810", borderColor: "#1a1a28" }}>
                     <div className="flex items-center gap-2">
                       <button onClick={() => setSelectedId("")} className="md:hidden text-xs tracking-widest uppercase px-2 py-0.5 border border-[#2a2a3a] text-[#a0a0e0] bg-[#0d0d14] mr-1 active:scale-95">
