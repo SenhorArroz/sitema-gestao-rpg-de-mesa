@@ -385,7 +385,7 @@ export default function NotasPage() {
 
   return (
     <AnalogGlitch>
-      <div className="flex flex-col h-[100dvh] overflow-hidden relative text-[#e8e0d0] bg-[radial-gradient(circle_at_50%_0%,#15151d_0%,#0a0a0e_42%,#050506_100%)] vhs-terminal" style={{ fontFamily: mono.style.fontFamily }}>
+      <div className="flex flex-col h-[100dvh] overflow-auto relative text-[#e8e0d0] bg-[radial-gradient(circle_at_50%_0%,#15151d_0%,#0a0a0e_42%,#050506_100%)] vhs-terminal" style={{ fontFamily: mono.style.fontFamily }}>
         <div className="pointer-events-none fixed inset-0 z-40 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.18)_2px,rgba(0,0,0,0.18)_4px)]" />
         <NoiseStrip />
 
@@ -410,10 +410,10 @@ export default function NotasPage() {
               <div className="flex items-center gap-2"><span className={`${m} text-xs tracking-widest bg-[#1b3b2b] text-[#40c060] px-2 py-1 border border-[#40c060]`}>ACESSO: GM_MASTER // CONFIDENCIAL</span></div>
             </header>
 
-            <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden relative z-10">
+            <div className="flex flex-col-reverse md:flex-row flex-1 overflow-auto relative z-10">
               <Sidebar active={activeNav} setActive={setActiveNav} mono={m} />
 
-              <div className="flex-1 flex flex-col bg-[#0a0a0e] overflow-hidden">
+              <div className="flex-1 flex flex-col bg-[#0a0a0e] overflow-auto">
                 <div className="flex items-center gap-1 p-2 bg-[#060a08] border-b border-[#1b3b2b] overflow-x-auto flex-shrink-0">
                   <SmBtn mono={m} active={subSistema === "DOSSIES"} onClick={() => setSubSistema("DOSSIES")} color="#40c060">[01] Arquivos Confidenciais</SmBtn>
                   <SmBtn mono={m} active={subSistema === "CONSPIRACAO"} onClick={() => setSubSistema("CONSPIRACAO")} color="#e03030">[02] Matriz de Conspiração</SmBtn>
@@ -423,7 +423,7 @@ export default function NotasPage() {
 
                 {/* DOSSIÊS */}
                 {subSistema === "DOSSIES" && (
-                  <div className="flex-1 flex flex-col md:flex-row overflow-hidden animate-in fade-in">
+                  <div className="flex-1 flex flex-col md:flex-row overflow-auto animate-in fade-in">
                     <div className={`w-full md:w-[300px] border-r border-[#1b3b2b] bg-[#060a08]/80 flex flex-col flex-shrink-0 shadow-[0_0_30px_rgba(0,0,0,0.5)] ${dossierSelecionadoId ? "hidden md:flex" : "flex"}`}>
                       <div className="p-3 border-b border-[#1b3b2b] bg-[#060a08]">
                         <span className="text-[10px] text-[#608070] tracking-widest block uppercase mb-2">// DIRETÓRIOS DE INDEXAÇÃO</span>
@@ -471,7 +471,7 @@ export default function NotasPage() {
 
                 {/* MATRIZ DE CONSPIRAÇÃO */}
                 {subSistema === "CONSPIRACAO" && (
-                  <div className="flex-1 flex flex-col md:flex-row overflow-hidden animate-in fade-in bg-[#060a08] p-2 md:p-6 select-none gap-2 md:gap-4">
+                  <div className="flex-1 flex flex-col md:flex-row overflow-auto animate-in fade-in bg-[#060a08] p-2 md:p-6 select-none gap-2 md:gap-4">
                     <div className="w-full md:w-[280px] border border-[#1b3b2b] bg-[#0a0a0e] p-4 flex flex-col justify-between flex-shrink-0 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
                       <div>
                         <span className={`${vt} text-xl text-[#e03030] block mb-3`}>// PAINEL OPERACIONAL</span>
