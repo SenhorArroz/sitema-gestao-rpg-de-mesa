@@ -233,7 +233,26 @@ export default function QuestsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingQuest, setEditingQuest] = useState<Quest | null>(null);
 
+  // Filtros e Busca
+  const [filtroTipo, setFiltroTipo] = useState<"TODAS" | "PRINCIPAL" | "SECUNDÁRIA">("TODAS");
+  const [filtroStatus, setFiltroStatus] = useState<"TODAS" | "ATIVA" | "CONCLUÍDA" | "FALHA">("TODAS");
+  const [searchTerm, setSearchTerm] = useState("");
+
   const selectedQuest = quests.find(q => q.id === selectedId);
+
+  // Lógica de filtragem
+  const filteredQuests = quests.filter(q => {
+    if (filtroTipo !== "TODAS" && q.tipo !== filtroTipo) return false;
+    if (filtroStatus !== "TODAS" && q.status !== filtroStatus) return false;
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      const matchTitulo = q.titulo.toLowerCase().includes(term);
+      const matchContratante = q.contratante.toLowerCase().includes(term);
+      const matchObjetivo = q.objetivoPrincipal.toLowerCase().includes(term);
+      if (!matchTitulo && !matchContratante && !matchObjetivo) return false;
+    }
+    return true;
+  });
 
   // Auto-selecionar o primeiro ao carregar
   useEffect(() => {
@@ -347,7 +366,7 @@ export default function QuestsPage() {
                 <div className="w-px h-6" style={{ background: "#1a1a28" }} />
                 <span className={`${mono.className} text-sm tracking-widest`} style={{ color: "#404060" }}>INDEX: DIRETRIZES DE CAMPANHA</span>
               </div>
-              <div className={`${mono.className} text-sm tracking-wider`} style={{ color: "#2a2a4a" }}>REGISTROS: {String(quests.length).padStart(2, '0')}</div>
+              <div className={`${mono.className} text-sm tracking-wider`} style={{ color: "#2a2a4a" }}>REGISTROS: {String(filteredQuests.length).padStart(2, '0')}/{String(quests.length).padStart(2, '0')}</div>
             </header>
 
             <div className="flex flex-col-reverse md:flex-row flex-1 overflow-hidden">
@@ -361,13 +380,70 @@ export default function QuestsPage() {
                     <span className={`${vt323.className} text-xl uppercase`} style={{ color: "#a0a0e0" }}>&gt; Log de Missões</span>
                     {isMestre && <SmBtn mono={mono.className} color="#e8d080" onClick={handleCreateNew}>+ Nova Missão</SmBtn>}
                   </div>
+
+                  {/* ─── BARRA DE FILTROS E BUSCA ─── */}
+                  <div className="flex flex-col gap-2 px-3 py-3 border-b flex-shrink-0" style={{ borderColor: "#1a1a28", background: "#0b0b12" }}>
+                    {/* Campo de Busca */}
+                    <div className="relative">
+                      <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[#606080] text-xs pointer-events-none">⌕</span>
+                      <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                        placeholder="Buscar por nome, contratante ou atividade..."
+                        className={`${mono.className} w-full bg-[#111116] border border-[#2a2a3a] text-[#c0c0d8] text-xs tracking-wider pl-7 pr-2 py-1.5 outline-none focus:border-[#e8d080] placeholder:text-[#404060] transition-colors`}
+                      />
+                      {searchTerm && (
+                        <button onClick={() => setSearchTerm("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#606080] hover:text-[#e03030] text-xs cursor-pointer bg-transparent border-0">✕</button>
+                      )}
+                    </div>
+
+                    {/* Filtros por Tipo */}
+                    <div className="flex items-center gap-1">
+                      <span className={`${mono.className} text-[9px] tracking-widest text-[#404060] mr-1 flex-shrink-0`}>TIPO:</span>
+                      {(["TODAS", "PRINCIPAL", "SECUNDÁRIA"] as const).map(t => (
+                        <button
+                          key={t}
+                          onClick={() => setFiltroTipo(t)}
+                          className={`${mono.className} text-[9px] tracking-widest px-2 py-0.5 border cursor-pointer transition-all duration-150`}
+                          style={{
+                            background: filtroTipo === t ? (t === "PRINCIPAL" ? "#e8d080" : t === "SECUNDÁRIA" ? "#a0a0e0" : "#606080") : "transparent",
+                            color: filtroTipo === t ? "#0a0a0e" : (t === "PRINCIPAL" ? "#e8d080" : t === "SECUNDÁRIA" ? "#a0a0e0" : "#606080"),
+                            borderColor: t === "PRINCIPAL" ? "#e8d080" : t === "SECUNDÁRIA" ? "#a0a0e0" : "#404060",
+                          }}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Filtros por Status */}
+                    <div className="flex items-center gap-1">
+                      <span className={`${mono.className} text-[9px] tracking-widest text-[#404060] mr-1 flex-shrink-0`}>STATUS:</span>
+                      {(["TODAS", "ATIVA", "CONCLUÍDA", "FALHA"] as const).map(s => (
+                        <button
+                          key={s}
+                          onClick={() => setFiltroStatus(s)}
+                          className={`${mono.className} text-[9px] tracking-widest px-2 py-0.5 border cursor-pointer transition-all duration-150`}
+                          style={{
+                            background: filtroStatus === s ? (s === "ATIVA" ? "#e8d080" : s === "CONCLUÍDA" ? "#40c060" : s === "FALHA" ? "#e03030" : "#606080") : "transparent",
+                            color: filtroStatus === s ? "#0a0a0e" : (s === "ATIVA" ? "#e8d080" : s === "CONCLUÍDA" ? "#40c060" : s === "FALHA" ? "#e03030" : "#606080"),
+                            borderColor: s === "ATIVA" ? "#e8d080" : s === "CONCLUÍDA" ? "#40c060" : s === "FALHA" ? "#e03030" : "#404060",
+                          }}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
                   <div className="flex-1 overflow-y-auto p-4 flex flex-col min-h-0">
                     {isLoading ? (
                       <span className="text-[#40c060] text-xs animate-pulse tracking-widest">// AQUISITANDO DADOS...</span>
-                    ) : quests.length === 0 ? (
-                      <span className="text-[#606080] text-xs">// NENHUMA MISSÃO ATIVA</span>
+                    ) : filteredQuests.length === 0 ? (
+                      <span className="text-[#606080] text-xs">// NENHUMA MISSÃO ENCONTRADA COM OS FILTROS ATUAIS</span>
                     ) : (
-                      quests.map((q) => {
+                      filteredQuests.map((q) => {
                         const sColor = getStatusColor(q.status);
                         return (
                           <button
